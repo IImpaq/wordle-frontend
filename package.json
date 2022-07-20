@@ -30,6 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"rollup-plugin-svelte": "^7.1.0"
+		"rollup-plugin-svelte": "^7.1.0",
+		"svelte-notifications": "^0.9.95"
 	}
 }
