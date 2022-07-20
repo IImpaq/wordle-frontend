@@ -3,6 +3,7 @@
   import { getNotificationsContext } from 'svelte-notifications';
   import Key from "./Key.svelte";
   import Letter from "./Letter.svelte";
+  import Cookies from "./Cookies.svelte";
 
   const { addNotification } = getNotificationsContext();
 
@@ -16,6 +17,7 @@
   let current_letter = 0;
   let current_row = 0;
   let current_word = [];
+  let correct_letters = 0;
 
   const keys = [];
   key_letters.forEach(key_letter => {
@@ -53,6 +55,7 @@
       keys[i].pressed = true;
     }
 
+    // WHEN PRESSING BACKSPACE
     if(key_code === 8) {
       if(current_letter > 0) {
         current_word.pop();
@@ -69,6 +72,7 @@
       return;
     }
 
+    // WHEN PRESSING ENTER
     if(key_code === 13) {
       // HANDLE ENTER
       if(current_letter < 4) {
@@ -113,6 +117,7 @@
         if(chosen_word[i] === current_word_string[i])
         {
           letters[i + (current_row * 5)].status = "correct";
+          correct_letters++;
           continue;
         }
 
@@ -140,9 +145,28 @@
         }
       }
 
+      if(correct_letters === 5) {
+        console.log("You found out the correct word");
+        addNotification({
+          text: "You found out the correct word!",
+          position: "top-right",
+          type: "success",
+          removeAfter: 3000
+        });
+      } else if(current_row === 5) {
+        console.log("You failed to find the correct word (" + chosen_word + ")");
+        addNotification({
+          text: "You lost! The correct word is: " + chosen_word,
+          position: "top-right",
+          type: "danger",
+          removeAfter: 3000
+        });
+      }
+
       current_word = [];
       current_row++;
       current_letter = 0;
+      correct_letters = 0;
 
       return;
     }
@@ -189,6 +213,7 @@
 <svelte:window on:keydown={handleKeypress} on:keyup={handleKeyrelease}/>
 
 <body>
+  <Cookies />
   <navbar>
     <ul class="nav-list">
       <li class="nav-item">
