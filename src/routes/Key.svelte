@@ -35,7 +35,7 @@
   .key {
     margin: 0;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
   }
 
   .selected {
