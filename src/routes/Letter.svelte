@@ -26,7 +26,7 @@
   .letter {
     margin: 0;
     font-weight: bold;
-    font-size: 1.75rem;
+    font-size: clamp(1rem, 1.5vw, 1.75rem);
   }
 
   .correct {

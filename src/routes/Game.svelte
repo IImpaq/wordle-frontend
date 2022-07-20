@@ -4,6 +4,7 @@
   import Key from "./Key.svelte";
   import Letter from "./Letter.svelte";
   import Cookies from "./Cookies.svelte";
+  import Navbar from "./Navbar.svelte";
 
   const { addNotification } = getNotificationsContext();
 
@@ -214,21 +215,7 @@
 
 <body>
   <Cookies />
-  <navbar>
-    <ul class="nav-list">
-      <li class="nav-item">
-        <button>?</button>
-      </li>
-      <li class="nav-item">
-        <a href="/">
-          Wordle
-        </a>
-      </li>
-      <li class="nav-item">
-        <button>#</button>
-      </li>
-    </ul>
-  </navbar>
+  <Navbar />
 
   <div class="gameboard">
     {#each letters as letter}
@@ -257,38 +244,13 @@
     min-height: 100vh;
   }
 
-  .nav-list {
-    background: #fff;
-    box-shadow: 0 0 10px #ddd;
-    margin: 1rem 1rem;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    list-style: none;
-  }
-
-  .nav-item > a {
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000;
-  }
-
-  .nav-item > button {
-    border-style: none;
-    background-color: #fff;
-    font-weight: bold;
-    color: #000;
-    font-size: 1.25rem;
-    cursor: pointer;
-  }
-
   .gameboard {
     margin: auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-gap: 1rem;
-    width: 25rem;
+    width: clamp(15rem, 20vw, 25rem);
+    #width: 25rem;
   }
 
   .keyboard {
@@ -296,6 +258,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    width: 30rem;
+    width: clamp(20rem, 25vw, 30rem);
+    #width: 30rem;
   }
 </style>
