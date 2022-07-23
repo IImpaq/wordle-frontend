@@ -1,18 +1,48 @@
 <script>
-  import {onMount} from "svelte";
-  import { getNotificationsContext } from 'svelte-notifications';
+  import {getNotificationsContext} from 'svelte-notifications';
+  import {
+    ApolloClient,
+    gql,
+    HttpLink,
+    InMemoryCache
+  } from "@apollo/client/core";
+  import {query, setClient} from "svelte-apollo";
   import Key from "./Key.svelte";
   import Letter from "./Letter.svelte";
   import Cookies from "./Cookies.svelte";
   import Navbar from "./Navbar.svelte";
+  import {onMount} from "svelte";
+  import BoopAction from "./BoopAction.svelte";
 
   const { addNotification } = getNotificationsContext();
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+      uri: 'http://localhost:4000',
+    })
+  });
+  setClient(client);
+
+  const GET_WORD = gql`
+    query GET_WORD {
+      getWord {
+        text
+      }
+    }
+  `;
+
+  const GET_WORDS = gql`
+    query {
+      getWords
+    }
+  `;
 
   const gameboard_size = 5 * 6;
   const key_letters = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
     "N", "O", "P", "Q", "R", "S", "T", "U", "&", "V", "W", "X", "Y", "Z", "-"
   ];
+
   let words = [];
   let chosen_word = "";
   let current_letter = 0;
@@ -30,20 +60,22 @@
     letters.push({ letter: "", status: "unknown" });
   }
 
-  onMount(async () => {
-    for (const key_letter of key_letters) {
-      if(key_letter === "&" || key_letter === "-")
-        continue;
+  const getWord = async () => {
+    await client.query({ query: GET_WORD }).then(res => {
+      chosen_word = res.data.getWord.text;
+    });
+  }
 
-      const res = await fetch("https://api.datamuse.com/words?sp=" + key_letter.toLowerCase() + "????&max=1000");
-      for(const res_json of await res.json()) {
-        words = words.concat(res_json.word.toUpperCase().toString());
-      }
-    }
+  const getWords = async () => {
+    await client.query({ query: GET_WORDS }).then(res => {
+      words = res.data.getWords;
+    });
+  }
 
-    chosen_word = words[Math.floor(Math.random() * words.length)];
-    console.log(words);
-  });
+  onMount(async () =>{
+    await getWord();
+    await getWords();
+  })
 
   const handleKeypress = (event) => {
     const key = event.key;
