@@ -3,6 +3,24 @@
   export let status;
   export let pressed;
   let hovered;
+
+  export let onClick = () => {};
+
+  export const getLetter = () => {
+    return letter;
+  }
+
+  export const setLetter = (a_letter) => {
+    letter = a_letter;
+  };
+
+  export const setStatus = (a_status) => {
+    status = a_status;
+  };
+
+  export const setPressed = (a_pressed) => {
+    pressed = a_pressed;
+  };
 </script>
 
 <div
@@ -12,6 +30,7 @@
       class:incorrect={status === "incorrect"}
       on:mouseover={() => hovered = true}
       on:mouseleave={() => hovered = false}
+      on:click={onClick}
 >
   <p class="key">
     {letter}

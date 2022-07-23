@@ -1,6 +1,14 @@
 <script>
   export let letter;
   export let status;
+
+  export const setLetter = (a_letter) => {
+    letter = a_letter;
+  };
+
+  export const setStatus = (a_status) => {
+    status = a_status;
+  };
 </script>
 
 <div
