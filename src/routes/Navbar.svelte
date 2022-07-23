@@ -1,7 +1,12 @@
-<navbar>
+<script>
+  import Tutorial from "./Tutorial.svelte";
+  let tutorial_notification;
+</script>
+
+<nav>
   <ul class="nav-list">
     <li class="nav-item">
-      <button>?</button>
+      <button on:click={tutorial_notification.open}>?</button>
     </li>
     <li class="nav-item">
       <a href="/">
@@ -12,7 +17,9 @@
       <button>#</button>
     </li>
   </ul>
-</navbar>
+</nav>
+
+<Tutorial bind:this={tutorial_notification} />
 
 <style>
   .nav-list {

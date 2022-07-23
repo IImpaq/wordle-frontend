@@ -1,5 +1,5 @@
 {
-	"name": "wordle",
+	"name": "wordle-frontend",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
@@ -30,7 +30,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@apollo/client": "^3.6.9",
 		"rollup-plugin-svelte": "^7.1.0",
+		"svelte-apollo": "^0.5.0",
 		"svelte-notifications": "^0.9.95"
 	}
 }
