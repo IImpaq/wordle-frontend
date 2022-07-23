@@ -73,6 +73,6 @@
 
   .incorrect {
     background-color: #c44536;
-    color: white;
+    color: #fff;
   }
 </style>
