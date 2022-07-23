@@ -37,7 +37,7 @@
   const gameboard_size = 5 * 6;
   const key_letters = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-    "N", "O", "P", "Q", "R", "S", "T", "U", "&", "V", "W", "X", "Y", "Z", "-"
+    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
   ];
 
   let words = [];
@@ -68,6 +68,12 @@
     await getWords();
   })
 
+  const jiggleLetters = () => {
+    for(let i = current_row * 5; i < (current_row * 5) + 5; i++) {
+      letters[i].animate(25*i);
+    }
+  }
+
   const handleKeypress = (event) => {
     const key = event.key;
 
@@ -91,6 +97,7 @@
           type: "warning",
           removeAfter: 2000
         });
+        jiggleLetters();
       }
       return;
     }
@@ -98,7 +105,7 @@
     // WHEN PRESSING ENTER
     if(key === "Enter") {
       // HANDLE ENTER
-      if(current_letter < 4) {
+      if(current_letter <= 4) {
         console.log("word is not long enough");
         addNotification({
           text: "Word isn't long enough",
@@ -106,6 +113,7 @@
           type: "warning",
           removeAfter: 2000
         });
+        jiggleLetters();
         return;
       }
 
@@ -122,6 +130,7 @@
           type: "warning",
           removeAfter: 2000
         });
+        jiggleLetters();
         return;
       }
 
@@ -148,9 +157,7 @@
           letters[i + (current_row * 5)].setStatus("position");
         else
           letters[i + (current_row * 5)].setStatus("incorrect");
-      }
 
-      for(let i = 0; i < 5; i++) {
         for(let j = 0; j < keys.length; j++) {
           if(keys[j].getLetter() !== current_word_string[i])
             continue;
@@ -213,6 +220,7 @@
         type: "warning",
         removeAfter: 2000
       });
+      jiggleLetters();
       return;
     }
 
@@ -251,15 +259,25 @@
   </div>
 
   <div class="keyboard">
-    {#each key_letters as key_letter, i}
-      <Key
-            letter={key_letter}
-            status={"unknown"}
-            pressed={false}
-            bind:this={keys[i]}
-            onClick={() => simulateKeypress({ key: key_letter })}
-      />
-    {/each}
+    <div class="keys">
+      {#each key_letters as key_letter, i}
+        <Key
+              letter={key_letter}
+              status={"unknown"}
+              pressed={false}
+              bind:this={keys[i]}
+              onClick={() => simulateKeypress({ key: key_letter })}
+        />
+      {/each}
+    </div>
+    <div class="inputs">
+      <button class="inputs-backspace" on:click={() => simulateKeypress({ key: "Backspace" })}>
+        Backspace
+      </button>
+      <button class="inputs-enter" on:click={() => simulateKeypress({ key: "Enter" })}>
+        Enter
+      </button>
+    </div>
   </div>
 </body>
 
@@ -289,9 +307,47 @@
   .keyboard {
     margin: auto;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
     width: clamp(20rem, 25vw, 30rem);
     #width: 30rem;
+  }
+
+  .keys {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .inputs > button {
+    border: none;
+    padding: 1rem;
+    margin: 0.5rem 0.5rem;
+    color: #fff;
+  }
+
+  .inputs > button:hover {
+    cursor: pointer;
+  }
+
+  .inputs-backspace {
+    background-color: #c44536;
+  }
+
+  .inputs-backspace:hover {
+    background-color: #a43a2d;
+  }
+
+  .inputs-enter {
+    background-color: #197278;
+  }
+
+  .inputs-enter:hover {
+    background-color: #145d62;
   }
 </style>
