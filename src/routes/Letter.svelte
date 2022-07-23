@@ -2,22 +2,26 @@
   export let letter;
   export let status;
 
-  let delay = 0;
+  let delay;
+  let duration;
+  let animation_type;
   let clicked = false;
-  let timeoutId = 0;
+  let timeout_id = 0;
   const onClick = () => {
     clicked = !clicked;
-    timeoutId++;
-    const tId = timeoutId;
+    timeout_id++;
+    const t_id = timeout_id;
     setTimeout(() => {
       // cancel timeout if new was set
-      if(tId === timeoutId)
+      if(t_id === timeout_id)
         clicked = false;
     }, 650);
   };
 
-  export const animate = (a_delay) => {
+  export const animate = (a_animation_type, a_delay, a_duration) => {
+    animation_type = a_animation_type;
     delay = a_delay;
+    duration = a_duration;
     onClick();
   };
 
@@ -30,7 +34,7 @@
   };
 </script>
 
-<span class={`boop${clicked ? (" wiggle") : ""}`} class:active={clicked} style="--animation: boop; animation-delay: {delay}ms;">
+<span class={`boop${clicked ? (" " + animation_type) : ""}`} class:active={clicked} style="--animation: boop; animation-delay: {delay}ms; animation-duration: {duration}ms;">
   <div
         class="letter-box"
         class:correct={status === "correct"}
@@ -77,7 +81,6 @@
     display: inline-block;
   }
   .boop.active {
-    animation-duration: 650ms;
     animation-play-state: paused;
     animation-fill-mode: forwards;
   }
@@ -110,6 +113,22 @@
   }
   .boop.wiggle {
     animation-name: wiggle;
+    animation-play-state: running;
+  }
+
+  @keyframes scale {
+    0% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1.25, 1.25);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  .boop.scale {
+    animation-name: scale;
     animation-play-state: running;
   }
 </style>

@@ -70,8 +70,12 @@
 
   const jiggleLetters = () => {
     for(let i = current_row * 5; i < (current_row * 5) + 5; i++) {
-      letters[i].animate(25*i);
+      letters[i].animate("wiggle", 25*i, 650);
     }
+  }
+
+  const scaleLetters = () => {
+    letters[current_row * 5 + current_letter].animate("scale", 0, 250);
   }
 
   const handleKeypress = (event) => {
@@ -89,6 +93,7 @@
       if(current_letter > 0) {
         current_word.pop();
         letters[--current_letter + (current_row * 5)].setLetter("");
+        scaleLetters();
       } else {
         console.log("nothing to delete");
         addNotification({
@@ -226,6 +231,7 @@
 
     current_word.push(...key.toUpperCase());
     letters[current_letter + (current_row * 5)].setLetter(key.toUpperCase());
+    scaleLetters();
     current_letter++;
   };
 
