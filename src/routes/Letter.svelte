@@ -5,7 +5,7 @@
   let delay = 0;
   let clicked = false;
   let timeoutId = 0;
-  export const onClick = () => {
+  const onClick = () => {
     clicked = !clicked;
     timeoutId++;
     const tId = timeoutId;
@@ -13,7 +13,7 @@
       // cancel timeout if new was set
       if(tId === timeoutId)
         clicked = false;
-    }, 1000);
+    }, 650);
   };
 
   export const animate = (a_delay) => {
@@ -37,8 +37,8 @@
         class:wrong-position={status === "position"}
         class:incorrect={status === "incorrect"}
   >
-  <p class="letter">{letter}</p>
-</div>
+    <p class="letter">{letter}</p>
+  </div>
 </span>
 
 <style>
