@@ -6,13 +6,11 @@
     HttpLink,
     InMemoryCache
   } from "@apollo/client/core";
-  import {query, setClient} from "svelte-apollo";
   import Key from "./Key.svelte";
   import Letter from "./Letter.svelte";
   import Cookies from "./Cookies.svelte";
   import Navbar from "./Navbar.svelte";
   import {onMount} from "svelte";
-  import BoopAction from "./BoopAction.svelte";
 
   const { addNotification } = getNotificationsContext();
   const client = new ApolloClient({
@@ -21,7 +19,6 @@
       uri: 'http://localhost:4000',
     })
   });
-  setClient(client);
 
   const GET_WORD = gql`
     query GET_WORD {
@@ -45,20 +42,14 @@
 
   let words = [];
   let chosen_word = "";
+
   let current_letter = 0;
   let current_row = 0;
   let current_word = [];
   let correct_letters = 0;
 
-  const keys = [];
-  key_letters.forEach(key_letter => {
-    keys.push({ letter: key_letter, status: "unknown", pressed: false });
-  });
-
+  let keys = [];
   let letters = [];
-  for(let i = 0; i < gameboard_size; i++) {
-    letters.push({ letter: "", status: "unknown" });
-  }
 
   const getWord = async () => {
     await client.query({ query: GET_WORD }).then(res => {
@@ -79,20 +70,19 @@
 
   const handleKeypress = (event) => {
     const key = event.key;
-    const key_code = event.keyCode;
 
     for(let i = 0; i < keys.length; i++) {
-      if(keys[i].letter !== key.toUpperCase())
+      if(keys[i].getLetter() !== key.toUpperCase())
         continue;
 
-      keys[i].pressed = true;
+      keys[i].setPressed(true);
     }
 
     // WHEN PRESSING BACKSPACE
-    if(key_code === 8) {
+    if(key === "Backspace") {
       if(current_letter > 0) {
         current_word.pop();
-        letters[--current_letter + (current_row * 5)].letter = "";
+        letters[--current_letter + (current_row * 5)].setLetter("");
       } else {
         console.log("nothing to delete");
         addNotification({
@@ -106,7 +96,7 @@
     }
 
     // WHEN PRESSING ENTER
-    if(key_code === 13) {
+    if(key === "Enter") {
       // HANDLE ENTER
       if(current_letter < 4) {
         console.log("word is not long enough");
@@ -149,32 +139,32 @@
       for(let i = 0; i < 5; i++) {
         if(chosen_word[i] === current_word_string[i])
         {
-          letters[i + (current_row * 5)].status = "correct";
+          letters[i + (current_row * 5)].setStatus("correct");
           correct_letters++;
           continue;
         }
 
         if(chosen_word.includes(current_word_string[i]))
-          letters[i + (current_row * 5)].status = "position";
+          letters[i + (current_row * 5)].setStatus("position");
         else
-          letters[i + (current_row * 5)].status = "incorrect";
+          letters[i + (current_row * 5)].setStatus("incorrect");
       }
 
       for(let i = 0; i < 5; i++) {
         for(let j = 0; j < keys.length; j++) {
-          if(keys[j].letter !== current_word_string[i])
+          if(keys[j].getLetter() !== current_word_string[i])
             continue;
 
           if(chosen_word[i] === current_word_string[i])
           {
-            keys[j].status = "correct";
+            keys[j].setStatus("correct");
             continue;
           }
 
           if(chosen_word.includes(current_word_string[i]))
-            keys[j].status = "position";
+            keys[j].setStatus("position");
           else
-            keys[j].status = "incorrect";
+            keys[j].setStatus("incorrect");
         }
       }
 
@@ -227,7 +217,7 @@
     }
 
     current_word.push(...key.toUpperCase());
-    letters[current_letter + (current_row * 5)].letter = key.toUpperCase();
+    letters[current_letter + (current_row * 5)].setLetter(key.toUpperCase());
     current_letter++;
   };
 
@@ -235,12 +225,17 @@
     const key = event.key;
 
     for(let i = 0; i < keys.length; i++) {
-      if(keys[i].letter !== key.toUpperCase())
+      if(keys[i].getLetter() !== key.toUpperCase())
         continue;
 
-      keys[i].pressed = false;
+      keys[i].setPressed(false);
     }
   };
+
+  const simulateKeypress = (event) => {
+    handleKeypress(event);
+    handleKeyrelease(event);
+  }
 </script>
 
 <svelte:window on:keydown={handleKeypress} on:keyup={handleKeyrelease}/>
@@ -250,14 +245,20 @@
   <Navbar />
 
   <div class="gameboard">
-    {#each letters as letter}
-      <svelte:component this={Letter} {...letter} />
+    {#each Array(gameboard_size) as _, i}
+      <Letter letter={""} status={"unknown"} bind:this={letters[i]} />
     {/each}
   </div>
 
   <div class="keyboard">
-    {#each keys as key}
-      <svelte:component this={Key} {...key} />
+    {#each key_letters as key_letter, i}
+      <Key
+            letter={key_letter}
+            status={"unknown"}
+            pressed={false}
+            bind:this={keys[i]}
+            onClick={() => simulateKeypress({ key: key_letter })}
+      />
     {/each}
   </div>
 </body>
