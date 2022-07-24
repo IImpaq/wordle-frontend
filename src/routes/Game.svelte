@@ -6,10 +6,10 @@
     HttpLink,
     InMemoryCache
   } from "@apollo/client/core";
-  import Key from "./Key.svelte";
-  import Letter from "./Letter.svelte";
-  import Cookies from "./Cookies.svelte";
-  import Navbar from "./Navbar.svelte";
+  import Key from "../lib/components/Key.svelte";
+  import Letter from "../lib/components/Letter.svelte";
+  import Cookies from "../lib/components/Cookies.svelte";
+  import Navbar from "../lib/components/Navbar.svelte";
   import {onMount} from "svelte";
   import {
     letter_count,

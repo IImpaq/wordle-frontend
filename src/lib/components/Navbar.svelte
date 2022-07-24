@@ -9,7 +9,7 @@
       <button on:click={tutorial_notification.open}>?</button>
     </li>
     <li class="nav-item">
-      <a href="/">
+      <a href="/static">
         Wordle
       </a>
     </li>
