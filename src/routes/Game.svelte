@@ -255,8 +255,8 @@
 <svelte:window on:keydown={handleKeypress} on:keyup={handleKeyrelease}/>
 
 <body>
-  <Cookies />
   <Navbar />
+  <Cookies />
 
   <div class="gameboard">
     {#each Array(gameboard_size) as _, i}
