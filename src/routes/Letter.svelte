@@ -15,7 +15,7 @@
       // cancel timeout if new was set
       if(t_id === timeout_id)
         clicked = false;
-    }, 650);
+    }, duration);
   };
 
   export const animate = (a_animation_type, a_delay, a_duration) => {
