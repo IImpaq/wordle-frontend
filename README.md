@@ -22,4 +22,4 @@ You can preview the production build with `npm run preview`.
 
 ## Backend
 You might want to check out the corresponding
-[backend application]()
+[backend application](https://github.com/IImpaq/wordle-backend)
