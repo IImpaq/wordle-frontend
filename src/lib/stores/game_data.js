@@ -7,6 +7,9 @@ export const key_letters = readable([
   "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 ]);
 
+export const keys = writable([]);
+export const letters = writable([]);
+
 export const words = writable([]);
 export const chosen_word = writable("");
 
