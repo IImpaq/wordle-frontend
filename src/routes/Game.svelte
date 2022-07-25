@@ -15,6 +15,8 @@
     letter_count,
     word_count,
     key_letters,
+    keys,
+    letters,
     words, chosen_word,
     current_letter,
     current_word,
@@ -46,9 +48,6 @@
 
   const gameboard_size = $letter_count * $word_count;
 
-  let keys = [];
-  let letters = [];
-
   const getWord = async () => {
     await client.query({ query: GET_WORD }).then(res => {
       chosen_word.set(res.data.getWord.text);
@@ -68,22 +67,22 @@
 
   const jiggleLetters = () => {
     for(let i = $current_row * $letter_count; i < ($current_row * $letter_count) + $letter_count; i++) {
-      letters[i].animate("wiggle", 25*i, 650);
+      $letters[i].animate("wiggle", 25*i, 650);
     }
   }
 
   const scaleLetters = () => {
-    letters[$current_row * $letter_count + $current_letter].animate("scale", 0, 250);
+    $letters[$current_row * $letter_count + $current_letter].animate("scale", 0, 250);
   }
 
   const handleKeypress = (event) => {
     const key = event.key;
 
-    for(let i = 0; i < keys.length; i++) {
-      if(keys[i].getLetter() !== key.toUpperCase())
+    for(let i = 0; i < $keys.length; i++) {
+      if($keys[i].getLetter() !== key.toUpperCase())
         continue;
 
-      keys[i].setPressed(true);
+      $keys[i].setPressed(true);
     }
 
     // WHEN PRESSING BACKSPACE
@@ -91,7 +90,7 @@
       if($current_letter > 0) {
         $current_word.pop();
         $current_letter--;
-        letters[$current_letter + ($current_row * $letter_count)].setLetter("");
+        $letters[$current_letter + ($current_row * $letter_count)].setLetter("");
         scaleLetters();
       } else {
         console.log("nothing to delete");
@@ -152,30 +151,30 @@
       for(let i = 0; i < $letter_count; i++) {
         if($chosen_word[i] === current_word_string[i])
         {
-          letters[i + ($current_row * $letter_count)].setStatus("correct");
+          $letters[i + ($current_row * $letter_count)].setStatus("correct");
           $correct_letters++;
           continue;
         }
 
         if($chosen_word.includes(current_word_string[i]))
-          letters[i + ($current_row * $letter_count)].setStatus("position");
+          $letters[i + ($current_row * $letter_count)].setStatus("position");
         else
-          letters[i + ($current_row * $letter_count)].setStatus("incorrect");
+          $letters[i + ($current_row * $letter_count)].setStatus("incorrect");
 
-        for(let j = 0; j < keys.length; j++) {
-          if(keys[j].getLetter() !== current_word_string[i])
+        for(let j = 0; j < $keys.length; j++) {
+          if($keys[j].getLetter() !== current_word_string[i])
             continue;
 
           if($chosen_word[i] === current_word_string[i])
           {
-            keys[j].setStatus("correct");
+            $keys[j].setStatus("correct");
             continue;
           }
 
           if($chosen_word.includes(current_word_string[i]))
-            keys[j].setStatus("position");
+            $keys[j].setStatus("position");
           else
-            keys[j].setStatus("incorrect");
+            $keys[j].setStatus("incorrect");
         }
       }
 
@@ -229,7 +228,7 @@
     }
 
     $current_word.push(...key.toUpperCase());
-    letters[$current_letter + ($current_row * $letter_count)].setLetter(key.toUpperCase());
+    $letters[$current_letter + ($current_row * $letter_count)].setLetter(key.toUpperCase());
     scaleLetters();
     $current_letter++
   };
@@ -237,11 +236,11 @@
   const handleKeyrelease = (event) => {
     const key = event.key;
 
-    for(let i = 0; i < keys.length; i++) {
-      if(keys[i].getLetter() !== key.toUpperCase())
+    for(let i = 0; i < $keys.length; i++) {
+      if($keys[i].getLetter() !== key.toUpperCase())
         continue;
 
-      keys[i].setPressed(false);
+      $keys[i].setPressed(false);
     }
   };
 
@@ -259,7 +258,7 @@
 
   <div class="gameboard">
     {#each Array(gameboard_size) as _, i}
-      <Letter letter={""} status={"unknown"} bind:this={letters[i]} />
+      <Letter letter={""} status={"unknown"} bind:this={$letters[i]} />
     {/each}
   </div>
 
@@ -270,7 +269,7 @@
               letter={key_letter}
               status={"unknown"}
               pressed={false}
-              bind:this={keys[i]}
+              bind:this={$keys[i]}
               onClick={() => simulateKeypress({ key: key_letter })}
         />
       {/each}
