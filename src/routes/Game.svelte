@@ -67,13 +67,13 @@
   })
 
   const jiggleLetters = () => {
-    for(let i = $current_row * 5; i < ($current_row * 5) + 5; i++) {
+    for(let i = $current_row * $letter_count; i < ($current_row * $letter_count) + $letter_count; i++) {
       letters[i].animate("wiggle", 25*i, 650);
     }
   }
 
   const scaleLetters = () => {
-    letters[$current_row * 5 + $current_letter].animate("scale", 0, 250);
+    letters[$current_row * $letter_count + $current_letter].animate("scale", 0, 250);
   }
 
   const handleKeypress = (event) => {
@@ -91,7 +91,7 @@
       if($current_letter > 0) {
         $current_word.pop();
         $current_letter--;
-        letters[$current_letter + ($current_row * 5)].setLetter("");
+        letters[$current_letter + ($current_row * $letter_count)].setLetter("");
         scaleLetters();
       } else {
         console.log("nothing to delete");
@@ -109,7 +109,7 @@
     // WHEN PRESSING ENTER
     if(key === "Enter") {
       // HANDLE ENTER
-      if($current_letter <= 4) {
+      if($current_letter <= ($letter_count - 1)) {
         console.log("word is not long enough");
         addNotification({
           text: "Word isn't long enough",
@@ -149,18 +149,18 @@
         return;
       }
 
-      for(let i = 0; i < 5; i++) {
+      for(let i = 0; i < $letter_count; i++) {
         if($chosen_word[i] === current_word_string[i])
         {
-          letters[i + ($current_row * 5)].setStatus("correct");
+          letters[i + ($current_row * $letter_count)].setStatus("correct");
           $correct_letters++;
           continue;
         }
 
         if($chosen_word.includes(current_word_string[i]))
-          letters[i + ($current_row * 5)].setStatus("position");
+          letters[i + ($current_row * $letter_count)].setStatus("position");
         else
-          letters[i + ($current_row * 5)].setStatus("incorrect");
+          letters[i + ($current_row * $letter_count)].setStatus("incorrect");
 
         for(let j = 0; j < keys.length; j++) {
           if(keys[j].getLetter() !== current_word_string[i])
@@ -179,7 +179,7 @@
         }
       }
 
-      if($correct_letters === 5) {
+      if($correct_letters === $letter_count) {
         console.log("You found out the correct word");
         addNotification({
           text: "You found out the correct word!",
@@ -187,7 +187,7 @@
           type: "success",
           removeAfter: 3000
         });
-      } else if($current_row === 5) {
+      } else if($current_row === $letter_count) {
         console.log("You failed to find the correct word (" + $chosen_word + ")");
         addNotification({
           text: "You lost! The correct word is: " + $chosen_word,
@@ -216,7 +216,7 @@
       return false;
     }
 
-    if($current_letter > 4)  {
+    if($current_letter > ($letter_count - 1))  {
       console.log("max word length reached");
       addNotification({
         text: "Max word length reached",
@@ -229,9 +229,9 @@
     }
 
     $current_word.push(...key.toUpperCase());
-    letters[$current_letter + ($current_row * 5)].setLetter(key.toUpperCase());
+    letters[$current_letter + ($current_row * $letter_count)].setLetter(key.toUpperCase());
     scaleLetters();
-    current_letter.set($current_letter + 1);
+    $current_letter++
   };
 
   const handleKeyrelease = (event) => {
@@ -313,7 +313,7 @@
     margin: auto;
     display: flex;
     flex-direction: column;
-    width: clamp(20rem, 25vw, 30rem);
+    width: clamp(20rem, 27.5vw, 30rem);
     #width: 30rem;
   }
 
@@ -330,8 +330,9 @@
   }
 
   .inputs > button {
+    font-weight: bold;
     border: none;
-    padding: 1rem;
+    padding: 0.85rem;
     margin: 0.5rem 0.5rem;
     color: #fff;
   }

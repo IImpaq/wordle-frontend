@@ -39,7 +39,7 @@
 
 <style>
   .key-box {
-    flex: 0 0 calc(12%);
+    flex: 0 0 calc(11%);
     background-color: #fff;
     aspect-ratio: 1;
     display: flex;
